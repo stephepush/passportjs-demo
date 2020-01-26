@@ -4,23 +4,24 @@ const jwt = require('jsonwebtoken');
 
 const db = require('../config/db.js');
 
+//constructor for User object
 const User = function(user){
     this.hash = user.hash;
     this.salt = user.salt;
     this.email = user.email;
 }
 
-let setPassword = function(password) {
+User.setPassword = function(password) {
     crypto.randomBytes(16).toString('hex');
     crypto.pbkdf2Sync(password, this.salt, 10000, 512,'sha512').toString('hex');
 };
 
-let validatePassword = function(password) {
+User.validatePassword = function(password) {
     const hash = crypto.pbkdf2Sync(password, this.salt, 1000, 512, 'sha512').toString('hex');
     return hash;
 }
 
-let generateJWT = function() {
+User.generateJWT = function() {
     const today = new Date();
     const expirationDate = new Date(today);
     expirationDate.setDate(today.getDate() + 60);
